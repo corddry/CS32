@@ -1,0 +1,122 @@
+Description:
+A doubly linked list that uses both head and tail pointers, not circular, no dummy nodes
+each node containing a key, value, next pointer and prev pointer. Nodes are added to the beginning of the list
+
+Pseudocode for erase & reassign:
+erase
+iterate through each node in the linked list
+	if the key of the current node matches the target key
+		if prev is the nullptr, make the current node the head
+		else make the node before it point to it
+		if next is the nullptr, make the current node the tail
+		else make the node after it point to it
+		delete the target node
+		decrement numNodes
+		return true
+	return false if the target was never found
+
+reassign
+make a new map to serve as the result
+if the input map is empty or only has one pair, return
+add the last pair on the map to the result with the values from the first before looping through the rest because the list isnt circular
+iterate through the linked list
+	if we can get the key and value of the next node,
+		insert that value with the key of the current node to the result
+assign the actual result to the working intermediate result
+
+
+Test cases:
+int main()
+{
+	Map m1, m2, r;
+
+	KeyType k = "asd", k2 = "sdf";
+	ValueType v = 1.23, v2 = 4.56;
+
+	//Test member functions on empty map
+	assert(m1.empty() && m1.size() == 0 && !(m1.update("asd", 2.0)) && !(m1.erase("asd"))
+		&& !(m1.get("asd", v)) && !(m1.get(0, k, v)));
+
+	assert(combine(m1, m2, r));
+
+	cerr << "Dump of combined maps before adding pairs" << endl;
+	r.dump();	//check r is empty and has nullptr head & tail
+	
+	m1.swap(m2);
+	reassign(m1, r);
+
+	cerr << "\nDump of empty m1 after using swap and reassign" << endl;
+	m1.dump();	//make sure nothing went horribly wrong
+
+	//Test member functions on a map with one value, both for returning true and false
+	assert(m1.insert(k, v) && m2.insertOrUpdate(k2, v2));
+	assert(!m1.empty() && m1.size() == 1 && m1.size() != 2 && m1.update("asd", v2) && !m1.update("sdf", 1.0) && !m1.erase("sdf")
+		&& m1.get("asd", v) && m1.get(0, k2, v2) && !m1.get("sdf", v) && !m1.get(1, k, v) && !m1.get(-1, k, v));
+	assert(v == 4.56 && k == "asd" && v2 == 4.56);	//Check get works
+	v = 1.23;
+
+	cerr << "\nDump of m1 after adding one pair and using functions" << endl;
+	m1.dump();	//make sure head and tail point to the pair
+	
+	assert(m1.erase("asd"));
+
+	cerr << "\nDump of m1 after deleting the pair" << endl;
+	m1.dump();	//make sure pointers reset and the pair is gone
+
+	m1.swap(m2);
+	reassign(m1, r);
+
+	cerr << "\nDump of m1 after using swap and reassign" << endl;
+	m1.dump();	//make sure nothing goes horribly wrong
+
+	//Test member functions on a map with two values
+	assert(m1.insert(k, v));
+	assert(!m1.empty() && m1.size() == 2 && m1.update("asd", v2) && !m1.update("dfg", 1.0) && !m1.erase("dfg")
+		&& m1.get("sdf", v) && m1.get(1, k, v2) && !m1.get("dfg", v) && !m1.get(3, k, v));
+	assert(v == 4.56 && k == "sdf" && v2 == 4.56);
+
+	cerr << "\nDump of m1 with two pairs after using functions" << endl;
+	m1.dump();	//make sure nothing goes horribly wrong
+
+	cerr << "\nDumps of m1 and m2 after swapping (m2 first)" << endl;
+	m2.swap(m1);
+	m2.dump();
+	m1.dump();
+
+	//Test member functions on a map with three values
+	assert(m1.insert("a", 1) && m1.insert("b", 2) && m1.insert("c", 3));
+	assert(m1.size() == 3 && m1.update("c", 3.3) && m1.get("c", v) && m1.get(1, k, v2));
+	assert(v == 3.3 && k == "b" && v2 == 2);
+
+	cerr << "\nDump of m1 with three pairs after using functions" << endl;
+	m1.dump();
+
+	reassign(m1, r);
+	cerr << "\nDump of r after reassigning m1" << endl;
+	r.dump();
+
+	assert(!combine(m1, r, m2));
+	cerr << "\nDump of the resultant map after combining m1 and r" << endl;
+	m2.dump();	//Should be empty
+
+	assert(combine(m1, m2, r));
+	cerr << "\nDump of r after combining m1 and m2" << endl;
+	r.dump();
+
+	r = m1;
+	cerr << "\nDump of m1 and r after doing r = m1 (m1 first)" << endl;
+	m1.dump();
+	r.dump();	//error here, cant figure out why
+
+	m1.erase("b");
+	cerr << "\nDump of m1 after deleting middle value" << endl;
+	m1.dump();
+
+	m1.erase("c");
+	cerr << "\nDump of m1 after deleting first value" << endl;
+	m1.dump();
+
+	//Should also test all functions that use two map variable parameters with the same map
+	//and also the copy constructor
+
+}

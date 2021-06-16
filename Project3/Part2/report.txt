@@ -1,0 +1,60 @@
+1. 
+doSomething() of each actor - performs actions of each actor as defined
+	in the spec. Defined as a pure virtual member of actor that all
+	subclasses must redefine, as each actor has a doSomething().
+Socrates::takeDamage
+	plays sounds, controlls death and damage of Socrates
+doSpecifics (goodies)
+	adjusts things like lives, or flame charges depending on the type
+	of goodie, a pure virtual function of goodie to allow each to
+	share a common doSomething
+Bacteria::getShot
+	makes bacteria respond as needed when hit by a projectile.
+	Defined in Bacteria because each type of bacteria responds
+	the same way when shot
+Bacteria::tryMove
+	looks to see if there's a dirt pile where a bacteria wants
+	to move, and returns false if the bacteria cant move
+	Has a default bool parameter isEcoli = false that allows
+	the function to be used with Ecoli without having to write a
+	whole new function to move the Ecoli 1 pixel less each time.
+	Defined in Bacteria because all bacterias move
+Bacteria::seesSocrates
+	returns true if Socrates is close enough to the bacteria to
+	trigger a chase. Regular Salmonella have a range value of 
+	-1 to never allow a chase.
+	Defined in Bacteria because all bacteria except regular
+	salmonella chase Socrates, and is neccessary for the
+	Bacteria's doSomething function
+StudentWorld::addInitActor
+	controlls the addition of Dirt, pits, and food, since all
+	three have the same spawning mechanisms. Takes a paremeter
+	that enables overlap prevention up until the parameter to
+	allow dirt to overlap with other dirt during the spawning
+StudentWorld::addGoodie
+	controlls the addition of goodies.
+StudentWorld::tryHit
+	controlls things like bacteria running into dirt or food and
+	projectiles hitting enemies or dirt piles.
+	Declared in StudentWorld to prevent duplicate code for all the
+	classes that rely on colliding with other classes.
+StudentWorld::addActor
+	pushes the actor into the parameter into the main vector
+StudentWorld::findNearestFood
+	returns the direction the "sniffer" bacteria must travel to
+	get to the food
+2. No known bugs or unfinished functionality
+3. The sample appears to draw sprays and flames an additional
+	time after the spray goes out of its range. In the spec,
+	it is written that the spray must immediately die as soon as
+	it maxes out its range, and StudentWorld's move() function gets
+	rid of all dead actors, preventing the spray from drawing its
+	final frame. I decided to stick to the spec and allow the
+	projectiles to dissapear visually early. Functionally, the
+	projectiles still damage actors in the full range and are
+	identical to the sample.
+4. All classes were tested manually by running Kontagion and diligently
+	comparing the behaviour to that of the sample and to the spec.
+	Additionally, temporary writes to cout were utilized to
+	ensure counters and return values functioned correctly, and
+	that there were no memory leaks

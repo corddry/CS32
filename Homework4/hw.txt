@@ -1,0 +1,21 @@
+2. This causes a compilation error because Coord does not have an != operator defined for it.
+Our function insertorupdate, which is called by the insert function, uses the != operator to 
+find if there is an existing key equal to the coords that are trying to be inserted. Without
+defining the != operator, the call will cause at least one compilation error.
+
+3a. O(N^3) because the innermost loop will run at max N times for each cycle of the containing loop, 
+which runs at max N times for each cycle of its containing loop, which runs N times. In other words,
+the innermost loop runs some integer multiple of N*N*N, or N^3 times, giving us a big-O of o(N^3)
+
+3b. Still O(N^3) because for very large values of N, 1/2 N^3 is still relatively close to N^3
+when compared to say, N^2 or N^4, and Big-O throws out the 1/2
+
+4a. O(N^2) with N = m.size() because the for loop runs N times and each cycle of the loop calls
+get() which, in the worst case scenario, cycles through the entire Map. We don't care about the
+other call to get() or anything else in the code segment because they are insignificant when
+compared to the amount of time spent on the call to get() inside the for loop.
+
+4b. O(N) because the for loop of the call cycles through the entire Map just once and there isn't
+anything inside the for loop that cycles through the Map itself. This is a better method than the
+implementation in part a because as N increases, the implementation in part b slows down much less
+than the implementation in part a.
